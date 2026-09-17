@@ -150,14 +150,20 @@ class TimeSeriesHierarchicalClustering:
 
         max_cluster = len(self.linkage_matrix) + 1
 
-        plt.figure(figsize=(12, 9))
+        # PyCharm/Jupyter могут подменять рисование графиков тёмной темой
+        # (рисуют поверх наших rcParams). Явно фиксируем белую подложку для
+        # фигуры и всех осей — и главной, и мини-графиков рядов справа.
+        plt.rcParams.update({'figure.facecolor': 'white',
+                             'axes.facecolor': 'white',
+                             'savefig.facecolor': 'white'})
+        fig = plt.figure(figsize=(12, 9), facecolor='white')
 
         # define gridspec space
         gs = gridspec.GridSpec(max_cluster, max_cluster)
 
         # add dendrogram to gridspec
         # add -1 to give timeseries graphs more space
-        plt.subplot(gs[:, 0 : max_cluster - ts_hspace - 1])
+        plt.subplot(gs[:, 0 : max_cluster - ts_hspace - 1], facecolor='white')
         plt.xlabel("Distance")
         plt.ylabel("Cluster")
         plt.title(title, fontsize=16, weight='bold')
