@@ -1,8 +1,11 @@
+import io
+
 import numpy as np
 import pandas as pd
 from sklearn.cluster import AgglomerativeClustering
 from scipy.cluster.hierarchy import dendrogram
 from typing_extensions import Self
+from IPython.display import display, Image
 
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -121,7 +124,7 @@ class TimeSeriesHierarchicalClustering:
         leaves = leaves[::-1]
 
         for cnt in range(len(leaves)):
-            plt.subplot(gs[cnt:cnt+1, max_cluster-ts_hspace:max_cluster])
+            plt.subplot(gs[cnt:cnt+1, max_cluster-ts_hspace:max_cluster], facecolor='white')
             plt.axis("off")
 
             # get leafnode name, which corresponds to original data index
@@ -133,7 +136,7 @@ class TimeSeriesHierarchicalClustering:
             color_ts = colors[label]
 
             plt.plot(ts, color=color_ts)
-            plt.text(ts_len+margin, 0, f'class = {label}')
+            plt.text(ts_len+margin, 0, f'класс = {label}')
 
 
     def plot_dendrogram(self, df: pd.DataFrame, labels: np.ndarray, ts_hspace: int = 12, title: str = 'Dendrogram') -> None:
@@ -150,12 +153,6 @@ class TimeSeriesHierarchicalClustering:
 
         max_cluster = len(self.linkage_matrix) + 1
 
-        # PyCharm/Jupyter могут подменять рисование графиков тёмной темой
-        # (рисуют поверх наших rcParams). Явно фиксируем белую подложку для
-        # фигуры и всех осей — и главной, и мини-графиков рядов справа.
-        plt.rcParams.update({'figure.facecolor': 'white',
-                             'axes.facecolor': 'white',
-                             'savefig.facecolor': 'white'})
         fig = plt.figure(figsize=(12, 9), facecolor='white')
 
         # define gridspec space
@@ -164,10 +161,20 @@ class TimeSeriesHierarchicalClustering:
         # add dendrogram to gridspec
         # add -1 to give timeseries graphs more space
         plt.subplot(gs[:, 0 : max_cluster - ts_hspace - 1], facecolor='white')
-        plt.xlabel("Distance")
-        plt.ylabel("Cluster")
+        plt.xlabel("Расстояние")
+        plt.ylabel("Кластер")
         plt.title(title, fontsize=16, weight='bold')
 
         ddata = dendrogram(self.linkage_matrix, orientation="left", color_threshold=sorted(self.model.distances_)[-2], show_leaf_counts=True)
 
         self._draw_timeseries_allclust(df, labels, ddata["leaves"], gs, ts_hspace)
+
+        # PyCharm умеет перекрашивать "живую" фигуру matplotlib под тёмную тему
+        # IDE, игнорируя наш facecolor. Чтобы этого избежать, сохраняем готовую
+        # фигуру в PNG-буфер с явным белым фоном и показываем уже готовую
+        # картинку — PyCharm её не перекрашивает, т.к. это просто изображение.
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png', dpi=100, bbox_inches='tight', facecolor='white')
+        plt.close(fig)
+        buf.seek(0)
+        display(Image(data=buf.getvalue()))

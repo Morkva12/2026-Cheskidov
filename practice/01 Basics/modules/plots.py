@@ -9,7 +9,7 @@ import plotly.graph_objs as go
 plotly.offline.init_notebook_mode(connected=True)
 
 
-def plot_ts(ts_set: np.ndarray, plot_title: str = 'Input Time Series Set'):
+def plot_ts(ts_set: np.ndarray, plot_title: str = 'Набор временных рядов'):
     """
     Plot the time series set
 
@@ -24,10 +24,10 @@ def plot_ts(ts_set: np.ndarray, plot_title: str = 'Input Time Series Set'):
     fig = go.Figure()
 
     for i in range(ts_num):
-        fig.add_trace(go.Scatter(x=np.arange(m), y=ts_set[i], line=dict(width=3), name="Time series " + str(i)))
+        fig.add_trace(go.Scatter(x=np.arange(m), y=ts_set[i], line=dict(width=3), name="Временной ряд " + str(i)))
 
     fig.update_xaxes(showgrid=False,
-                     title='Time',
+                     title='Время',
                      title_font=dict(size=18, color='black'),
                      linecolor='#000',
                      ticks="outside",
@@ -35,7 +35,7 @@ def plot_ts(ts_set: np.ndarray, plot_title: str = 'Input Time Series Set'):
                      linewidth=1,
                      tickwidth=1)
     fig.update_yaxes(showgrid=False,
-                     title='Values',
+                     title='Значения',
                      title_font=dict(size=18, color='black'),
                      linecolor='#000',
                      ticks="outside",
