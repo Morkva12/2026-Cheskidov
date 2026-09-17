@@ -51,7 +51,7 @@ def DTW_distance(ts1: np.ndarray, ts2: np.ndarray, r: float = 1) -> float:
     dtw_dist = D[n, n]
     return dtw_dist
 
-# Задача 3
+# Задача 5
 def norm_ED_distance(ts1: np.ndarray, ts2: np.ndarray) -> float:
     """
     Calculate the normalized Euclidean distance
