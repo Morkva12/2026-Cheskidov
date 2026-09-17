@@ -3,7 +3,20 @@ import pandas as pd
 import math
 import cv2
 import imutils
-from google.colab.patches import cv2_imshow
+try:
+    from google.colab.patches import cv2_imshow
+except ImportError:
+    # Локальный запуск (PyCharm / Jupyter): google.colab недоступен,
+    # показываем изображение через matplotlib.
+    import matplotlib.pyplot as plt
+
+    def cv2_imshow(img: np.ndarray) -> None:
+        if img.ndim == 3:
+            plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        else:
+            plt.imshow(img, cmap='gray')
+        plt.axis('off')
+        plt.show()
 
 
 class Image2TimeSeries:
@@ -197,3 +210,23 @@ class Image2TimeSeries:
             ts.append(dist)
 
         return np.array(ts)
+
+
+def image2ts(img: np.ndarray, angle_step: int = 10, is_visualize: bool = False) -> np.ndarray:
+    """
+    Convert image to time series by angle-based method (wrapper over Image2TimeSeries)
+
+    Parameters
+    ----------
+    img: input image
+    angle_step: angle step for finding the contour points
+    is_visualize: visualize or not image with contours, center and rays from center
+
+    Returns
+    -------
+    ts: time series representation of the image
+    """
+
+    converter = Image2TimeSeries(angle_step)
+
+    return converter.convert(img, is_visualize)

@@ -1,6 +1,6 @@
 import numpy as np
 
-
+# Задача 1
 def ED_distance(ts1: np.ndarray, ts2: np.ndarray) -> float:
     """
     Calculate the Euclidean distance
@@ -16,12 +16,42 @@ def ED_distance(ts1: np.ndarray, ts2: np.ndarray) -> float:
     """
     
     ed_dist = 0
+    for i in range(len(ts1)):
+        ed_dist += (ts1[i] - ts2[i])**2
+    ed_dist = np.sqrt(ed_dist)
 
-    # INSERT YOUR CODE
 
     return ed_dist
 
+#Задача 2
+def DTW_distance(ts1: np.ndarray, ts2: np.ndarray, r: float = 1) -> float:
+    """
+    Calculate DTW distance
 
+    Parameters
+    ----------
+    ts1: first time series
+    ts2: second time series
+    r: warping window size
+
+    Returns
+    -------
+    dtw_dist: DTW distance between ts1 and ts2
+    """
+
+    n = len(ts1)
+    D = np.full((n + 1, n + 1), np.inf)
+    D[0, 0] = 0
+
+    for i in range(1, n + 1):
+        for j in range(1, n + 1):
+            cost = (ts1[i - 1] - ts2[j - 1]) ** 2
+            D[i, j] = cost + min(D[i - 1, j], D[i, j - 1], D[i - 1, j - 1])
+
+    dtw_dist = D[n, n]
+    return dtw_dist
+
+# Задача 3
 def norm_ED_distance(ts1: np.ndarray, ts2: np.ndarray) -> float:
     """
     Calculate the normalized Euclidean distance
@@ -43,23 +73,4 @@ def norm_ED_distance(ts1: np.ndarray, ts2: np.ndarray) -> float:
     return norm_ed_dist
 
 
-def DTW_distance(ts1: np.ndarray, ts2: np.ndarray, r: float = 1) -> float:
-    """
-    Calculate DTW distance
 
-    Parameters
-    ----------
-    ts1: first time series
-    ts2: second time series
-    r: warping window size
-    
-    Returns
-    -------
-    dtw_dist: DTW distance between ts1 and ts2
-    """
-
-    dtw_dist = 0
-
-    # INSERT YOUR CODE
-
-    return dtw_dist

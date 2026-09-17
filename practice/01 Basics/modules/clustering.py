@@ -66,7 +66,17 @@ class TimeSeriesHierarchicalClustering:
         self: the fitted model
         """
 
-       # INSERT YOUR CODE
+        # metric='precomputed' — на вход подаём уже готовую матрицу расстояний,
+        # а не сами ряды. compute_distances=True нужен, чтобы у модели появился
+        # атрибут distances_, по которому строится дендрограмма.
+        self.model = AgglomerativeClustering(n_clusters=self.n_clusters,
+                                             metric='precomputed',
+                                             linkage=self.method,
+                                             compute_distances=True)
+        self.model.fit(distance_matrix)
+
+        self.labels_ = self.model.labels_
+        self.linkage_matrix = self._create_linkage_matrix()
 
         return self
 
