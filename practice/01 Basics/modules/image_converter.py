@@ -6,8 +6,7 @@ import imutils
 try:
     from google.colab.patches import cv2_imshow
 except ImportError:
-    # Локальный запуск (PyCharm / Jupyter): google.colab недоступен,
-    # показываем изображение через matplotlib.
+    # локально google.colab нет, показываем через matplotlib
     import matplotlib.pyplot as plt
 
     def cv2_imshow(img: np.ndarray) -> None:
@@ -45,7 +44,14 @@ class Image2TimeSeries:
         prep_img: image after preprocessing
         """
 
-        # INSERT YOUR CODE
+        # в оттенки серого
+        gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        # инверсия
+        inv_img = cv2.bitwise_not(gray_img)
+        # размытие
+        blur_img = cv2.GaussianBlur(inv_img, (5, 5), 0)
+        # бинаризация
+        _, prep_img = cv2.threshold(blur_img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
         return prep_img
 

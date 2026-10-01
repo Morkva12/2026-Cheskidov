@@ -49,11 +49,9 @@ class PairwiseDistance:
 
         dist_func = None
 
-        # Функция берётся по имени метрики. Без скобок: кладём саму функцию
-        # как значение, вызывать её будем позже в calculate().
+        # выбираем функцию по названию метрики
         if self.metric == 'euclidean':
-            # для нормализованных рядов евклидова метрика считается
-            # специальной формулой norm_ED_distance (Часть 2, задача 6)
+            # для нормализованных рядов - norm_ED_distance
             dist_func = norm_ED_distance if self.is_normalize else ED_distance
         elif self.metric == 'dtw':
             dist_func = DTW_distance
@@ -81,15 +79,13 @@ class PairwiseDistance:
         dist_func = self._choose_distance()
 
         data = input_data
-        # Для всех метрик, кроме евклидовой, нормализация делается заранее
-        # z-нормализацией самих рядов (norm_ED_distance нормализует сама).
+        # для остальных метрик нормализуем ряды заранее
         if self.is_normalize and self.metric != 'euclidean':
             data = np.array([z_normalize(ts) for ts in input_data])
 
         ts_number = data.shape[0]
 
-        # Матрица симметрична (dist(i, j) == dist(j, i)) и на диагонали нули,
-        # поэтому считаем только верхний треугольник (j > i), а нижний зеркалим.
+        # матрица симметричная, считаем только верхний треугольник
         for i in range(ts_number):
             for j in range(i + 1, ts_number):
                 dist = dist_func(data[i], data[j])

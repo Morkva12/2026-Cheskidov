@@ -66,7 +66,17 @@ class TimeSeriesKNN:
 
         dist = 0
 
-        # INSERT YOUR CODE
+        # нормализация
+        if self.metric_params.get('normalize', False):
+            x_train = z_normalize(x_train)
+            x_test = z_normalize(x_test)
+
+        if self.metric == 'euclidean':
+            dist = ED_distance(x_train, x_test)
+        elif self.metric == 'dtw':
+            dist = DTW_distance(x_train, x_test, self.metric_params.get('r', 1))
+        else:
+            raise ValueError(f"Unknown metric: {self.metric}")
 
         return dist
 
@@ -86,7 +96,14 @@ class TimeSeriesKNN:
 
         neighbors = []
 
-        # INSERT YOUR CODE
+        # расстояние до каждого ряда обучающей выборки
+        for i in range(len(self.X_train)):
+            dist = self._distance(self.X_train[i], x_test)
+            neighbors.append((dist, self.Y_train[i]))
+
+        # k ближайших
+        neighbors.sort(key=lambda pair: pair[0])
+        neighbors = neighbors[:self.n_neighbors]
 
         return neighbors
 
@@ -106,7 +123,14 @@ class TimeSeriesKNN:
 
         y_pred = []
 
-        # INSERT YOUR CODE
+        for x_test in X_test:
+            neighbors = self._find_neighbors(x_test)
+            # самый частый класс среди соседей
+            votes = {}
+            for dist, label in neighbors:
+                votes[label] = votes.get(label, 0) + 1
+            best_label = max(votes, key=lambda label: votes[label])
+            y_pred.append(best_label)
 
         return np.array(y_pred)
 

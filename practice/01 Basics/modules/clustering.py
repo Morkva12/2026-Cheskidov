@@ -69,9 +69,7 @@ class TimeSeriesHierarchicalClustering:
         self: the fitted model
         """
 
-        # metric='precomputed' — на вход подаём уже готовую матрицу расстояний,
-        # а не сами ряды. compute_distances=True нужен, чтобы у модели появился
-        # атрибут distances_, по которому строится дендрограмма.
+        # на вход подаётся готовая матрица расстояний
         self.model = AgglomerativeClustering(n_clusters=self.n_clusters,
                                              metric='precomputed',
                                              linkage=self.method,
@@ -169,10 +167,7 @@ class TimeSeriesHierarchicalClustering:
 
         self._draw_timeseries_allclust(df, labels, ddata["leaves"], gs, ts_hspace)
 
-        # PyCharm умеет перекрашивать "живую" фигуру matplotlib под тёмную тему
-        # IDE, игнорируя наш facecolor. Чтобы этого избежать, сохраняем готовую
-        # фигуру в PNG-буфер с явным белым фоном и показываем уже готовую
-        # картинку — PyCharm её не перекрашивает, т.к. это просто изображение.
+        # показываем фигуру как картинку с белым фоном
         buf = io.BytesIO()
         fig.savefig(buf, format='png', dpi=100, bbox_inches='tight', facecolor='white')
         plt.close(fig)

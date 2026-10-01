@@ -53,6 +53,5 @@ def plot_ts(ts_set: np.ndarray, plot_title: str = 'Набор временных
                       height=400
                       )
 
-    # renderer="colab" работает только в Google Colab; без параметра plotly
-    # сам выбирает подходящий способ отрисовки (PyCharm / Jupyter).
+    # renderer="colab" работает только в Colab
     fig.show()

@@ -23,7 +23,7 @@ def ED_distance(ts1: np.ndarray, ts2: np.ndarray) -> float:
 
     return ed_dist
 
-#Задача 2
+# Задача 2
 def DTW_distance(ts1: np.ndarray, ts2: np.ndarray, r: float = 1) -> float:
     """
     Calculate DTW distance
@@ -66,9 +66,19 @@ def norm_ED_distance(ts1: np.ndarray, ts2: np.ndarray) -> float:
     norm_ed_dist: normalized Euclidean distance between ts1 and ts2s
     """
 
-    norm_ed_dist = 0
+    n = len(ts1)
 
-    # INSERT YOUR CODE
+    # среднее и стандартное отклонение
+    mu1 = np.mean(ts1)
+    mu2 = np.mean(ts2)
+    sigma1 = np.sqrt(np.sum(ts1**2) / n - mu1**2)
+    sigma2 = np.sqrt(np.sum(ts2**2) / n - mu2**2)
+
+    # скалярное произведение
+    dot = np.dot(ts1, ts2)
+
+    # нормализация заложена в формулу: вычитаем средние и делим на отклонения
+    norm_ed_dist = np.sqrt(abs(2 * n * (1 - (dot - n * mu1 * mu2) / (n * sigma1 * sigma2))))
 
     return norm_ed_dist
 
